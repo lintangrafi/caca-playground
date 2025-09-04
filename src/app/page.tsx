@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import Cropper from 'react-easy-crop';
 import type { Area } from 'react-easy-crop';
 import { Camera, Upload, Music, BookOpen, Heart, Flower, Mail, ArrowLeft, Plus, X } from 'lucide-react';
@@ -247,7 +248,7 @@ function useStickyState<T>(defaultValue: T, key: string): [T, React.Dispatch<Rea
 const PolaroidCard: React.FC<PolaroidCardProps> = ({ imageSrc, fortune }) => (
   <div className="bg-white p-4 pb-14 shadow-xl rounded-sm transform -rotate-3 hover:rotate-0 transition-transform duration-300 w-full max-w-sm mx-auto">
     <div className="relative w-full h-80 bg-gray-200 rounded-sm overflow-hidden">
-      <img src={imageSrc} alt="Selfie Caca" className="w-full h-full object-cover" />
+  <Image src={imageSrc} alt="Selfie Caca" className="w-full h-full object-cover" fill style={{objectFit:'cover'}} />
     </div>
     <p className="text-center mt-6 text-gray-700 font-serif italic text-lg px-2">&quot;{fortune}&quot;</p>
   </div>
@@ -259,7 +260,17 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => (
     <p className="text-right mt-4 text-amber-700 font-semibold">- {quote.author}</p>
   </div>
 );
-const MemoryCard: React.FC<MemoryCardProps> = ({ memory }) => ( <div className="relative bg-white p-4 pb-10 shadow-lg rounded-sm w-full max-w-sm mx-auto transform -rotate-2 hover:rotate-0 transition-transform duration-300"> <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-yellow-200/50 backdrop-blur-sm border-l border-r border-yellow-300/50 transform -rotate-3 shadow-sm"></div> <div className="relative w-full h-72 bg-gray-200 rounded-sm overflow-hidden"> <img src={memory.imageSrc} alt="Memori" className="w-full h-full object-cover" /> <p className="absolute bottom-2 right-2 text-xs bg-black/40 text-white px-1.5 py-0.5 rounded font-sans">{memory.date}</p> </div> <p className="text-center mt-4 text-gray-700 font-serif text-base px-2">{memory.caption}</p> <span className="absolute -bottom-3 -right-3 text-5xl transform rotate-12 drop-shadow">🌸</span> </div> );
+const MemoryCard: React.FC<MemoryCardProps> = ({ memory }) => (
+  <div className="relative bg-white p-4 pb-10 shadow-lg rounded-sm w-full max-w-sm mx-auto transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-yellow-200/50 backdrop-blur-sm border-l border-r border-yellow-300/50 transform -rotate-3 shadow-sm"></div>
+    <div className="relative w-full h-72 bg-gray-200 rounded-sm overflow-hidden">
+  <Image src={memory.imageSrc} alt="Memori" className="w-full h-full object-cover" fill style={{objectFit:'cover'}} />
+      <p className="absolute bottom-2 right-2 text-xs bg-black/40 text-white px-1.5 py-0.5 rounded font-sans">{memory.date}</p>
+    </div>
+    <p className="text-center mt-4 text-gray-700 font-serif text-base px-2">{memory.caption}</p>
+    <span className="absolute -bottom-3 -right-3 text-5xl transform rotate-12 drop-shadow">🌸</span>
+  </div>
+);
 const SongCard: React.FC<SongCardProps> = ({ song }) => ( <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-auto flex items-center space-x-6 border-2 border-pink-200 transform hover:scale-105 transition-transform duration-300"><div className="flex-shrink-0"><div className="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center shadow-inner"><Music className="text-white w-8 h-8" /></div></div><div><p className="text-gray-500 text-sm">Lagu untukmu saat ini:</p><h3 className="text-2xl font-bold text-gray-800">{song.title}</h3><p className="text-gray-600 text-lg">{song.artist}</p></div></div> );
 
 // -- KOMPONEN UTAMA --
@@ -375,11 +386,47 @@ export default function App() {
         <button onClick={() => setShowSecretLetter(true)} className="fixed top-4 right-4 z-40 animate-bounce bg-white p-2 rounded-full shadow-lg hover:animate-none"> <Mail className="w-6 h-6 text-rose-400"/> </button>
         
         <div className="relative z-10 flex flex-col min-h-screen">
-            <header className="text-center py-8"><h1 className="text-4xl md:text-5xl font-bold text-pink-600 font-serif">Caca's Playground</h1><p className="text-pink-400 mt-2 flex items-center justify-center">dibuat dengan <Heart className="w-4 h-4 mx-1.5 fill-current" /> oleh Lintang</p></header>
+            <header className="text-center py-8"><h1 className="text-4xl md:text-5xl font-bold text-pink-600 font-serif">Caca&apos;s Playground</h1><p className="text-pink-400 mt-2 flex items-center justify-center">dibuat dengan <Heart className="w-4 h-4 mx-1.5 fill-current" /> oleh Lintang</p></header>
             <main className="flex-grow p-4 md:p-8">
-                {activeTab === 'absen' && (<div className="flex flex-col items-center justify-center space-y-8 animate-fade-in">{!photoPreview ? (<><h2 className="text-2xl font-semibold text-center text-pink-800">Absen dulu yuk, Caca!</h2> {hasUploadedToday ? (<p className="text-center bg-rose-100 p-4 rounded-lg">Kamu sudah absen hari ini. Sampai jumpa besok!</p>) : (<label htmlFor="selfie-upload" className="cursor-pointer group"><div className="w-64 h-64 bg-white rounded-full flex flex-col items-center justify-center shadow-lg border-4 border-dashed border-pink-300 group-hover:border-pink-500 group-hover:scale-105 transition-all duration-300"><Camera className="w-20 h-20 text-pink-300 group-hover:text-pink-500 transition-colors" /><span className="mt-4 font-semibold text-pink-600">Pilih Foto</span></div></label>)} <input id="selfie-upload" type="file" accept="image/*" className="hidden" onChange={handleFileSelect} /></>) : (<div className="text-center"><h2 className="text-2xl font-semibold text-pink-800 mb-4">Pratinjau Foto</h2><img src={photoPreview} alt="Pratinjau" className="max-w-xs w-full rounded-lg shadow-lg mx-auto" /><div className="flex gap-4 mt-6 justify-center"><button onClick={() => setPhotoPreview(null)} className="px-6 py-2 bg-gray-300 text-gray-800 rounded-full hover:bg-gray-400">Batal</button><button onClick={handleUploadConfirm} className="px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 flex items-center gap-2"><Upload className="w-5 h-5"/>Upload</button></div></div>)}</div>)}
+                {activeTab === 'absen' && (
+                  <div className="flex flex-col items-center justify-center space-y-8 animate-fade-in">
+                    {!photoPreview ? (
+                      <>
+                        <h2 className="text-2xl font-semibold text-center text-pink-800">Absen dulu yuk, Caca!</h2>
+                        {hasUploadedToday ? (
+                          <p className="text-center bg-rose-100 p-4 rounded-lg">Kamu sudah absen hari ini. Sampai jumpa besok!</p>
+                        ) : (
+                          <label htmlFor="selfie-upload" className="cursor-pointer group">
+                            <div className="w-64 h-64 bg-white rounded-full flex flex-col items-center justify-center shadow-lg border-4 border-dashed border-pink-300 group-hover:border-pink-500 group-hover:scale-105 transition-all duration-300">
+                              <Camera className="w-20 h-20 text-pink-300 group-hover:text-pink-500 transition-colors" />
+                              <span className="mt-4 font-semibold text-pink-600">Pilih Foto</span>
+                            </div>
+                          </label>
+                        )}
+                        <input id="selfie-upload" type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+                      </>
+                    ) : (
+                      <div className="text-center">
+                        <h2 className="text-2xl font-semibold text-pink-800 mb-4">Pratinjau Foto</h2>
+                        <Image
+                          src={photoPreview}
+                          alt="Pratinjau"
+                          width={400}
+                          height={400}
+                          className="max-w-xs w-full rounded-lg shadow-lg mx-auto"
+                        />
+                        <div className="flex gap-4 mt-6 justify-center">
+                          <button onClick={() => setPhotoPreview(null)} className="px-6 py-2 bg-gray-300 text-gray-800 rounded-full hover:bg-gray-400">Batal</button>
+                          <button onClick={handleUploadConfirm} className="px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 flex items-center gap-2">
+                            <Upload className="w-5 h-5" />Upload
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {activeTab === 'taman' && (<div className="animate-fade-in text-center"><h2 className="text-3xl font-bold text-center text-pink-800 font-serif mb-8">Taman Bunga Caca</h2>{flowers.length === 0 ? (<p className="text-gray-500">Tamanmu masih kosong. Upload fotomu untuk menanam bunga pertama!</p>) : (<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">{flowers.map(flower => (<button key={flower.id} onClick={() => setViewedFlower(flower)} className="bg-white/70 p-4 rounded-lg shadow-md flex flex-col items-center justify-center aspect-square animate-fade-in hover:scale-105 hover:shadow-xl transition-all"><span className="text-5xl">{flower.emoji}</span><p className="font-bold mt-2 text-pink-700">{flower.name}</p><p className="text-xs text-gray-500">{flower.collectedDate}</p></button>))}</div>)}</div>)}
-                {activeTab === 'rak' && (<div className="animate-fade-in"><h2 className="text-3xl font-bold text-center text-pink-800 font-serif mb-8">{activeBook ? activeBook.title : "Rak Buku Interaktif"}</h2>{activeBook ? (<div><button onClick={() => setActiveBook(null)} className="flex items-center gap-2 mb-6 text-pink-600 hover:underline"><ArrowLeft size={16}/>Kembali ke Rak</button><div className="space-y-6">{(activeBook.content as any[]).map((item, idx) => { if (activeBook.type === 'poems') return <PoemCard key={idx} poem={item}/>; if (activeBook.type === 'quotes') return <QuoteCard key={idx} quote={item}/>; if (activeBook.type === 'memories') return <MemoryCard key={item.id} memory={item}/>; return null; })} {!showAddForm && (<button onClick={() => setShowAddForm(true)} className="w-full flex items-center justify-center gap-2 p-4 text-center border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 text-gray-500 transition-colors mt-8"><Plus size={20} /><span>Tambah Baru</span></button>)} {showAddForm && (<> {activeBook.type === 'memories' && (<AddMemoryForm onAdd={handleAddMemory} onCancel={() => setShowAddForm(false)} />)} {activeBook.type === 'poems' && <AddContentForm type="poem" onAdd={handleAddContent} onCancel={() => setShowAddForm(false)}/>} {activeBook.type === 'quotes' && <AddContentForm type="quote" onAdd={handleAddContent} onCancel={() => setShowAddForm(false)}/>} </>)}</div></div>) : (<div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">{books.map(book => (<button key={book.id} onClick={() => handleOpenBook(book)} className="p-6 bg-rose-100 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 text-rose-800 font-serif font-bold text-xl text-center">{book.title}</button>))}</div>)}</div>)}
+                {activeTab === 'rak' && (<div className="animate-fade-in"><h2 className="text-3xl font-bold text-center text-pink-800 font-serif mb-8">{activeBook ? activeBook.title : "Rak Buku Interaktif"}</h2>{activeBook ? (<div><button onClick={() => setActiveBook(null)} className="flex items-center gap-2 mb-6 text-pink-600 hover:underline"><ArrowLeft size={16}/>Kembali ke Rak</button><div className="space-y-6">{(activeBook.content as (Poem | Quote | Memory)[]).map((item, idx) => { if (activeBook.type === 'poems') return <PoemCard key={idx} poem={item as Poem}/>; if (activeBook.type === 'quotes') return <QuoteCard key={idx} quote={item as Quote}/>; if (activeBook.type === 'memories') return <MemoryCard key={(item as Memory).id} memory={item as Memory}/>; return null; })} {!showAddForm && (<button onClick={() => setShowAddForm(true)} className="w-full flex items-center justify-center gap-2 p-4 text-center border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 text-gray-500 transition-colors mt-8"><Plus size={20} /><span>Tambah Baru</span></button>)} {showAddForm && (<> {activeBook.type === 'memories' && (<AddMemoryForm onAdd={handleAddMemory} onCancel={() => setShowAddForm(false)} />)} {activeBook.type === 'poems' && <AddContentForm type="poem" onAdd={handleAddContent} onCancel={() => setShowAddForm(false)}/>} {activeBook.type === 'quotes' && <AddContentForm type="quote" onAdd={handleAddContent} onCancel={() => setShowAddForm(false)}/>} </>)}</div></div>) : (<div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">{books.map(book => (<button key={book.id} onClick={() => handleOpenBook(book)} className="p-6 bg-rose-100 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 text-rose-800 font-serif font-bold text-xl text-center">{book.title}</button>))}</div>)}</div>)}
                 {activeTab === 'song' && (<div className="flex flex-col items-center justify-center animate-fade-in space-y-6"><h2 className="text-3xl font-bold text-center text-pink-800 font-serif">Melodi Saat Ini</h2><SongCard song={currentSong} /></div>)}
             </main>
             <nav className="sticky bottom-0 left-0 right-0 bg-white/70 backdrop-blur-sm p-2 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]"><div className="max-w-md mx-auto grid grid-cols-4 gap-2"> <TabButton id="absen" icon={Camera} label="Absen" /> <TabButton id="taman" icon={Flower} label="Taman" /> <TabButton id="rak" icon={BookOpen} label="Rak Buku" /> <TabButton id="song" icon={Music} label="Lagu" /> </div></nav>
@@ -506,7 +553,15 @@ function AddMemoryForm({ onAdd, onCancel }: { onAdd: (imageSrc: string, caption:
                         </div>
                     </div>
                 )}
-                {image && !cropping && <img src={image} alt="Preview Memori" className="max-w-xs w-full rounded-lg mx-auto" />}
+                {image && !cropping && (
+                  <Image
+                    src={image}
+                    alt="Preview Memori"
+                    width={400}
+                    height={400}
+                    className="max-w-xs w-full rounded-lg mx-auto"
+                  />
+                )}
         <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="Tulis kata-katamu di sini..." rows={3} className="w-full p-2 border border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500"/>
         <button type="submit" className="w-full bg-purple-500 text-white py-2 rounded-full hover:bg-purple-600 flex items-center justify-center gap-2"><Plus className="w-5 h-5"/>Simpan Memori</button>
       </div>
