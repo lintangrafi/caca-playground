@@ -9,7 +9,8 @@ import { Camera, Upload, Music, BookOpen, Heart, Flower, Mail, ArrowLeft, Plus, 
 interface Poem { title: string; author: string; lines: string[]; isUserAdded?: boolean; }
 interface Quote { text: string; author: string; isUserAdded?: boolean; }
 interface Memory { id: number; imageSrc: string; caption: string; date: string; }
-interface Book { id: number; title: string; type: 'poems' | 'quotes' | 'memories'; content: any[]; }
+type BookContent = Poem | Quote | Memory;
+interface Book { id: number; title: string; type: 'poems' | 'quotes' | 'memories'; content: BookContent[]; }
 interface Song { title: string; artist: string; }
 interface FlowerInstance { id: number; name: string; emoji: string; collectedDate: string; imageSrc: string; fortune: string; }
 
@@ -23,7 +24,18 @@ interface MemoryCardProps { memory: Memory; }
 
 
 // -- DATA KONTEN AWAL --
-const fortuneMessages: string[] = [ "Hari ini, senyummu akan menjadi alasan seseorang ikut tersenyum.", "Jangan lupa, kamu lebih kuat dari yang kamu kira. Semangat Caca!", "Coba lihat ke luar jendela. Ada keindahan yang menunggumu hari ini.", "Energi positif sedang mengelilingimu. Manfaatkan dengan baik!", "Ingatlah untuk minum air yang cukup dan beristirahat. Kamu berharga.", "Sebuah kejutan kecil yang menyenangkan akan datang hari ini.", "Hari ini adalah hari yang sempurna untuk memulai sesuatu yang baru.", "Jangan takut untuk bersinar, kamu adalah bintangnya.", "Kebaikan kecil yang kamu lakukan hari ini akan kembali padamu.", "Lintang bilang: 'Kamu hebat banget hari ini!'", ];
+const fortuneMessages: string[] = [
+  "Hari ini, senyummu akan menjadi alasan seseorang ikut tersenyum.",
+  "Jangan lupa, kamu lebih kuat dari yang kamu kira. Semangat Caca!",
+  "Coba lihat ke luar jendela. Ada keindahan yang menunggumu hari ini.",
+  "Energi positif sedang mengelilingimu. Manfaatkan dengan baik!",
+  "Ingatlah untuk minum air yang cukup dan beristirahat. Kamu berharga.",
+  "Sebuah kejutan kecil yang menyenangkan akan datang hari ini.",
+  "Hari ini adalah hari yang sempurna untuk memulai sesuatu yang baru.",
+  "Jangan takut untuk bersinar, kamu adalah bintangnya.",
+  "Kebaikan kecil yang kamu lakukan hari ini akan kembali padamu.",
+  "Lintang bilang: &apos;Kamu hebat banget hari ini!&apos;",
+];
 const initialBooks: Book[] = [ { id: 1, title: "Puisi Penguat Hati", type: 'poems', content: [ { title: "Untukmu, Bunga yang Mekar", author: "Lintang", lines: [ "Di tengah riuh rendah dunia,", "Kau adalah hening yang paling berharga.", "Setiap kelopak dirimu adalah cerita,", "Tentang kekuatan yang tak pernah sirna.", "Mekarlah tanpa ragu, Caca.", ] }, { title: "Cermin Bukan Juri", author: "Lintang", lines: [ "Jangan biarkan cermin mendefinisikanmu,", "Karena ia hanya memantul apa yang terlihat.", "Keindahanmu ada pada caramu tertawa,", "Pada caramu bertahan saat dunia tak bersahabat.", "Kamu adalah puisi yang tak perlu dijelaskan." ] }, { title: "Langit Kelabu", author: "Lintang", lines: [ "Ada hari di mana langkah terasa berat,", "Dan langit tampak lebih kelabu dari biasanya.", "Ingatlah, bahkan bunga terindah pun butuh hujan.", "Badai ini hanya sedang menyiram akarmu,", "Agar esok kau bisa mekar lebih megah." ] }, ] }, { id: 2, title: "Kutipan Semangat", type: 'quotes', content: [ { text: "Satu-satunya perjalanan yang mustahil adalah yang tidak pernah kamu mulai.", author: "Tony Robbins" }, { text: "Jadilah versi terbaik dari dirimu sendiri.", author: "Anonim" }, { text: "Kebahagiaan bukan sesuatu yang sudah jadi. Itu berasal dari tindakanmu sendiri.", author: "Dalai Lama" }, ] }, { id: 3, title: "Memori Bersama", type: 'memories', content: [] } ];
 const songs: Song[] = [
   { title: "ウヲアイニ", artist: "Shunji Iwai" },
@@ -232,9 +244,21 @@ function useStickyState<T>(defaultValue: T, key: string): [T, React.Dispatch<Rea
 }
 
 // -- KOMPONEN-KOMPONEN KECIL --
-const PolaroidCard: React.FC<PolaroidCardProps> = ({ imageSrc, fortune }) => ( <div className="bg-white p-4 pb-14 shadow-xl rounded-sm transform -rotate-3 hover:rotate-0 transition-transform duration-300 w-full max-w-sm mx-auto"> <div className="relative w-full h-80 bg-gray-200 rounded-sm overflow-hidden"><img src={imageSrc} alt="Selfie Caca" className="w-full h-full object-cover" /></div> <p className="text-center mt-6 text-gray-700 font-serif italic text-lg px-2">"{fortune}"</p> </div> );
+const PolaroidCard: React.FC<PolaroidCardProps> = ({ imageSrc, fortune }) => (
+  <div className="bg-white p-4 pb-14 shadow-xl rounded-sm transform -rotate-3 hover:rotate-0 transition-transform duration-300 w-full max-w-sm mx-auto">
+    <div className="relative w-full h-80 bg-gray-200 rounded-sm overflow-hidden">
+      <img src={imageSrc} alt="Selfie Caca" className="w-full h-full object-cover" />
+    </div>
+    <p className="text-center mt-6 text-gray-700 font-serif italic text-lg px-2">&quot;{fortune}&quot;</p>
+  </div>
+);
 const PoemCard: React.FC<PoemCardProps> = ({ poem }) => ( <div className="bg-rose-50 border border-rose-200 p-6 rounded-lg shadow-md w-full"><h3 className="text-2xl font-bold text-rose-800 font-serif mb-2">{poem.title}</h3><p className="text-sm text-rose-500 mb-4">oleh: {poem.author}</p><div className="space-y-2">{poem.lines.map((line, index) => (<p key={index} className="text-gray-700">{line}</p>))}</div></div> );
-const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => ( <div className="bg-amber-50 border border-amber-200 p-6 rounded-lg shadow-md w-full"><p className="text-xl italic text-gray-700">"{quote.text}"</p><p className="text-right mt-4 text-amber-700 font-semibold">- {quote.author}</p></div> );
+const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => (
+  <div className="bg-amber-50 border border-amber-200 p-6 rounded-lg shadow-md w-full">
+    <p className="text-xl italic text-gray-700">&quot;{quote.text}&quot;</p>
+    <p className="text-right mt-4 text-amber-700 font-semibold">- {quote.author}</p>
+  </div>
+);
 const MemoryCard: React.FC<MemoryCardProps> = ({ memory }) => ( <div className="relative bg-white p-4 pb-10 shadow-lg rounded-sm w-full max-w-sm mx-auto transform -rotate-2 hover:rotate-0 transition-transform duration-300"> <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-yellow-200/50 backdrop-blur-sm border-l border-r border-yellow-300/50 transform -rotate-3 shadow-sm"></div> <div className="relative w-full h-72 bg-gray-200 rounded-sm overflow-hidden"> <img src={memory.imageSrc} alt="Memori" className="w-full h-full object-cover" /> <p className="absolute bottom-2 right-2 text-xs bg-black/40 text-white px-1.5 py-0.5 rounded font-sans">{memory.date}</p> </div> <p className="text-center mt-4 text-gray-700 font-serif text-base px-2">{memory.caption}</p> <span className="absolute -bottom-3 -right-3 text-5xl transform rotate-12 drop-shadow">🌸</span> </div> );
 const SongCard: React.FC<SongCardProps> = ({ song }) => ( <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-auto flex items-center space-x-6 border-2 border-pink-200 transform hover:scale-105 transition-transform duration-300"><div className="flex-shrink-0"><div className="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center shadow-inner"><Music className="text-white w-8 h-8" /></div></div><div><p className="text-gray-500 text-sm">Lagu untukmu saat ini:</p><h3 className="text-2xl font-bold text-gray-800">{song.title}</h3><p className="text-gray-600 text-lg">{song.artist}</p></div></div> );
 
@@ -369,7 +393,6 @@ export default function App() {
 // -- KOMPONEN FORM TAMBAHAN --
 function AddMemoryForm({ onAdd, onCancel }: { onAdd: (imageSrc: string, caption: string) => void, onCancel: () => void }) {
   const [image, setImage] = useState<string | null>(null);
-  const [rawFile, setRawFile] = useState<File | null>(null);
   const [caption, setCaption] = useState('');
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -378,7 +401,6 @@ function AddMemoryForm({ onAdd, onCancel }: { onAdd: (imageSrc: string, caption:
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
-      setRawFile(e.target.files[0]);
       setImage(URL.createObjectURL(e.target.files[0]));
       setCropping(true);
     }
@@ -484,7 +506,7 @@ function AddMemoryForm({ onAdd, onCancel }: { onAdd: (imageSrc: string, caption:
                         </div>
                     </div>
                 )}
-        {image && !cropping && <img src={image} alt="Preview Memori" className="max-w-xs w-full rounded-lg mx-auto" />}
+                {image && !cropping && <img src={image} alt="Preview Memori" className="max-w-xs w-full rounded-lg mx-auto" />}
         <textarea value={caption} onChange={e => setCaption(e.target.value)} placeholder="Tulis kata-katamu di sini..." rows={3} className="w-full p-2 border border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500"/>
         <button type="submit" className="w-full bg-purple-500 text-white py-2 rounded-full hover:bg-purple-600 flex items-center justify-center gap-2"><Plus className="w-5 h-5"/>Simpan Memori</button>
       </div>
